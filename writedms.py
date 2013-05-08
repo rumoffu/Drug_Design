@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # run with
 # chimera --nogui olfr1392_1u19_noH.pdb writedms.py
 #chimera --nogui pdb:3D7F_withoutLigand writedms.py
