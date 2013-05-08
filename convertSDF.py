@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Uses chimera to change to a directory,
 # open all .sdf files
 # and add hydrogrens and then add charge using the ff99SB gasteiger method
