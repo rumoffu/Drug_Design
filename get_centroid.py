@@ -6,38 +6,28 @@
 # finishes by writing the output as a mol2 file
 # run this with:
 # chimera --nogui get_centroid.py
+import sys
 from os import chdir, listdir
 from chimera import *
+print "sys.argv[3] %s" % sys.argv[3]
 
-def save_reply_log(path):
-  from chimera.tkgui import saveReplyLog
-	saveReplyLog(r'~/vboxshared/research/sphere_gen/%s'  % path)
-	print "saved to %s" % path
+chdir("receptors")
+print "done chdir receptors"
+runCommand("open " + sys.argv[3])
+# find centroid based on hydrophobicity
+runCommand("define centroid :/kdHydrophobicity=4.5")
+print "done get_centroid.py"
 '''
-   from chimera import dialogs
-   r = dialogs.find('reply')
-   print "found r:%s" % r
-   text = r.text.get('1.0', 'end')
-   f = open(path, 'w')
-   f.write(text)
-   f.close()
+        from DockPrep import prep
+        models = chimera.openModels.list(modelTypes=[chimera.Molecule])
+        prep(models)
+        from WriteMol2 import writeMol2
+        writeMol2(models, pdb[:-4]+ "_charged.mol2")
 '''
-chdir("receptors") # change to the receptors file directory
-for pdb in listdir("."):
-        if not pdb.endswith(".pdb"):
-                continue
-	# find centroid based on hydrophobicity
-        runCommand("open " + pdb)
-	runCommand("define centroid :/kdHydrophobicity=4.5")
-	save_reply_log(pdb[:-4] + ".txt")
-        runCommand("close all")
-
 '''
-	# addh and charge 
-        runCommand("open " + pdb)
+        # addh and charge 
         runCommand("addh")
         runCommand("addcharge all chargeModel ff99SB method gas")
-        runCommand("write format mol2 0 " + sdf[:-4] + "_charged.mol2")
+        runCommand("write format mol2 0 " + pdb[:-4] + "_charged.mol2")
         runCommand("close all")
 '''
-
