@@ -7,7 +7,7 @@ import sys
 from os import chdir, listdir 
 
 #protonate 
-root_path = '/damsl/projects/molecules/data/Odorant_GPCR/r_test'
+root_path = '/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393/dock6_finegrid'
 cid = ""
 if os.path.exists(os.path.join(root_path,cid)):
         directory_exists='true'
@@ -16,7 +16,7 @@ if os.path.exists(os.path.join(root_path,cid)):
 	for pdb in listdir("."):
 		if not pdb.endswith(".pdb"):
 	                continue
-	        if pdb.endswith("_mod2.pdb"):
+	        if "_mod2" in pdb: #do not do pdb2pqr again 
 			continue
 		if pdb == "1gzm.pdb": #don't need to do the aligning pdb
 			continue
@@ -67,22 +67,57 @@ for pdb in listdir("."):
 	subprocess.Popen(cmd_st, cwd = os.path.join(root_path,cid),
 		shell=True, stdout=subprocess.PIPE,stdin=subprocess.PIPE).stdout.read()
 
-	cmd_st = ("./sphgen_cpp")
+	cmd_st = ("rm OUTSPH")
 	print cmd_st
 	subprocess.Popen(cmd_st, cwd = os.path.join(root_path,cid),
 		shell=True, stdout=subprocess.PIPE,stdin=subprocess.PIPE).stdout.read()
 
-	cmd_st = ("./sphere_selector.exe rec.sph {0}.mol2 5").format(pdb[:-4])
+	cmd_st = ("sphgen -i INSPH -o OUTSPH")
 	print cmd_st
 	subprocess.Popen(cmd_st, cwd = os.path.join(root_path,cid),
 		shell=True, stdout=subprocess.PIPE,stdin=subprocess.PIPE).stdout.read()
 
-	cmd_st = ("mv selected_spheres.sph {0}.sph").format(pdb[:-12])
+	cmd_st = ("sphere_selector rec.sph {0}.mol2 3").format(pdb[:-4])
 	print cmd_st
 	subprocess.Popen(cmd_st, cwd = os.path.join(root_path,cid),
 		shell=True, stdout=subprocess.PIPE,stdin=subprocess.PIPE).stdout.read()
 
+	cmd_st = ("rm rec.sph")
+	print cmd_st
+	subprocess.Popen(cmd_st, cwd = os.path.join(root_path,cid),
+		shell=True, stdout=subprocess.PIPE,stdin=subprocess.PIPE).stdout.read()
+
+	cmd_st = ("mv selected_spheres.sph {0}.sph").format(pdb[:-4])
+	print cmd_st
+	subprocess.Popen(cmd_st, cwd = os.path.join(root_path,cid),
+		shell=True, stdout=subprocess.PIPE,stdin=subprocess.PIPE).stdout.read()
+
+	showbox_file = open('showbox.in', 'w')
+	showbox_file.write('Y\n8\n')
+	message = '{0}.sph\n'.format(pdb[:-4])
+	showbox_file.write(message)
+	showbox_file.write('1\n')
+	message = '{0}_box.pdb\n'.format(pdb[:-4])
+	showbox_file.write(message)
+	showbox_file.close()
+
+        cmd_st = ("showbox < showbox.in")
+        print cmd_st
+        subprocess.Popen(cmd_st, cwd = os.path.join(root_path,cid),
+                shell=True, stdout=subprocess.PIPE,stdin=subprocess.PIPE).stdout.read()
+
+	with open('grid.in', 'r') as file:
+		# read a list of lines into data
+		gridin = file.readlines()
+
+	gridin[13] = 'receptor_file                  {0}_charged.mol2\n'.format(pdb[:-4])
+	gridin[14] = 'box_file                       {0}_box.pdb\n'.format(pdb[:-4])
+	gridin[16] = 'score_grid_prefix              {0}.grid'.format(pdb[:-4])
+
+
+	# and write everything back
+	with open('grid.in', 'w') as file:
+	    file.writelines( gridin )
 	print "done with %s" % pdb
 	#root_path = '/damsl/homes/kwong23/controlscripts'
-
 
