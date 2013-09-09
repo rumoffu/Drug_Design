@@ -14,19 +14,29 @@ import math
 import random
 
 def get_dock6_score(self):
-        score_dir = '/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393/dock6_grid_gpcrm_modeller_model8/bilayer_frames/gpcrm_modeller_model8_frame_466'
+        # score_dir = '/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393/dock6_grid_gpcrm_modeller_model8/bilayer_frames/gpcrm_modeller_model8_frame_466'
         # enter the directory
-        os.chdir(score_dir)
+        # os.chdir(score_dir)
         # for ls *dock6*out
-        for out in listdir('.'):
+        for out in listdir('*dock6*out'):
+                print 'working on: ' + out
+                outfile = open('
+                infile = open(out, 'r')
+                lines = infile.readlines()
+                for line in lines:
+                        if 'grid_score' in lines:
+                                #outfile.write
+                                print line # score
+                
 os.chdir('/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393')
 for receptor in listdir('dock6_grid_*'):
         os.chdir(receptor + '/bilayer_frames')
         for frame in listdir('.'):
                 os.chdir(frame)
                 get_dock6_score()
-                os.chdir('..')
-        os.chdir('..')
+                os.chdir('..') #exit frame folder
+        os.chdir('../..') #exit bilayer frames and receptor
+
 
 
 '''
