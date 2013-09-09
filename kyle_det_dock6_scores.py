@@ -19,7 +19,17 @@ def get_dock6_score(self):
         os.chdir(score_dir)
         # for ls *dock6*out
         for out in listdir('.'):
+os.chdir('/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393')
+for receptor in listdir('dock6_grid_*'):
+        os.chdir(receptor + '/bilayer_frames')
+        for frame in listdir('.'):
+                os.chdir(frame)
+                get_dock6_score()
+                os.chdir('..')
+        os.chdir('..')
 
+
+'''
 scores_list  = [line.strip() for line in open("/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393/oe_fred_high_gpcrm_model1/bilayer_frames/rosetta-modeller-model1_frame_45/list_odorator_scores", 'r')]
 os.chdir('/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393/oe_fred_high_gpcrm_model1/bilayer_frames/rosetta-modeller-model1_frame_45')
 outfile = open('/damsl/projects/molecules/data/Odorant_GPCR/gpcrm_model1_frame_45_scores_27Aug2013_odorator', 'w')
@@ -34,3 +44,4 @@ for score in scores_list:
             col = line.split("\t")
             row_contribution = col[1] + " " + col[0] + '\n'
             outfile.write(row_contribution)
+'''
