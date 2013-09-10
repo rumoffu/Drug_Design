@@ -13,29 +13,40 @@ import re
 import math
 import random
 
-def get_dock6_score(self):
+def get_dock6_score():
         # score_dir = '/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393/dock6_grid_gpcrm_modeller_model8/bilayer_frames/gpcrm_modeller_model8_frame_466'
         # enter the directory
         # os.chdir(score_dir)
         # for ls *dock6*out
-        for out in listdir('*dock6*out'):
-                print 'working on: ' + out
-                outfile = open('
-                infile = open(out, 'r')
-                lines = infile.readlines()
-                for line in lines:
-                        if 'grid_score' in lines:
-                                #outfile.write
-                                print line # score
+	for out in os.listdir('.'):
+		if 'dock6' in out and out.endswith('.out'):
+        #for out in os.listdir('*dock6*out'):
+			print 'working on: ' + receptor + ' ' + frame + ' ' + out
+			if 'no' in out:
+				outfile = open('/damsl/projects/molecules/data/Odorant_GPCR/' + receptor + '_' + frame + '_no_scores.txt', 'w')
+			else:
+				outfile = open('/damsl/projects/molecules/data/Odorant_GPCR/' + receptor + '_' + frame + 'scores.txt', 'w')
+			infile = open(out, 'r')
+			lines = infile.readlines()
+			for line in lines:
+				if 'Molecule:' in line:
+					molecule_name = line[10:].strip()
+        	                if 'Grid Score:' in line:
+					grid_score = line[25:].strip()
+        	                        outfile.write(grid_score + '\t' + molecule_name + '\n')
+                	                #print grid_score, molecule_name # score
                 
 os.chdir('/damsl/projects/molecules/data/Odorant_GPCR/receptor_models/olfr1393')
-for receptor in listdir('dock6_grid_*'):
-        os.chdir(receptor + '/bilayer_frames')
-        for frame in listdir('.'):
-                os.chdir(frame)
-                get_dock6_score()
-                os.chdir('..') #exit frame folder
-        os.chdir('../..') #exit bilayer frames and receptor
+for receptor in os.listdir('.'):
+	if 'dock6_grid_' in receptor:
+	#for receptor in os.listdir('dock6_grid_*'):
+        	os.chdir(receptor + '/bilayer_frames')
+        	for frame in os.listdir('.'):
+			if frame.endswith('.pdb'): continue
+        	        os.chdir(frame)
+        	        get_dock6_score()
+        	        os.chdir('..') #exit frame folder
+        	os.chdir('../..') #exit bilayer frames and receptor
 
 
 
